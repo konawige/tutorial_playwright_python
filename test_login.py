@@ -1,9 +1,16 @@
 import re
+
+import pytest
 from playwright.sync_api import Page, expect
 
 
-def test_successful_login(page: Page):
-    page.goto("http://localhost:3000/login")
+@pytest.fixture()
+def login_url(base_url):
+    return base_url + "/login"
+
+
+def test_successful_login(page: Page, login_url):
+    page.goto(login_url)
     # Expect a title "to contain" a substring.
     expect(page).to_have_title(re.compile("Login"))
 
@@ -22,8 +29,8 @@ def test_successful_login(page: Page):
     expect(page.locator("[id='welcome-text']")).to_contain_text('Willy')
 
 
-def test_wrong_password(page: Page):
-    page.goto("http://localhost:3000/login")
+def test_wrong_password(page: Page, login_url):
+    page.goto(login_url)
 
     # Expect a title "to contain" a substring.
     expect(page).to_have_title(re.compile("Login"))
@@ -43,8 +50,8 @@ def test_wrong_password(page: Page):
     assert page.wait_for_selector(".error-text").is_visible()
 
 
-def test_forgot_password(page: Page):
-    page.goto("http://localhost:3000/login")
+def test_forgot_password(page: Page, login_url):
+    page.goto(login_url)
 
     # data
     # create a locator
